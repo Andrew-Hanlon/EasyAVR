@@ -453,7 +453,7 @@ void led_fn_deactivate(const uint8_t bit)
 
 void fn_down(const uint8_t code, const uint8_t action)
 {
-	enqueue_fn(code);
+	enqueue_fn(code);	
 	if (g_layer_select != g_default_layer)
 		led_host_off((g_layer_select + (LED_FN_ACTIVE-1)));
 	g_layer_select = (code - SCANCODE_FN_BARRIER);
@@ -472,7 +472,7 @@ void fn_down(const uint8_t code, const uint8_t action)
 
 void fn_up(const uint8_t code, const uint8_t action, const uint8_t tapkey, const uint8_t tap)
 {
-	delete_fn(code);
+	delete_fn(code);	
 	if (tap && (g_layer_select == (code - SCANCODE_FN_BARRIER)))
 	{
 		if ((g_double_tap_repeat) && (action & ACTION_LOCKABLE))
@@ -841,10 +841,22 @@ void handle_code_actuate(const uint8_t code, const uint8_t action, const uint8_t
 	case HID_KEYBOARD_SC_RIGHT_GUI:
 		mod_down(code, action);
 		break;
-	case SCANCODE_FN:
+	case SCANCODE_FN:	
+		queue_autokeys(HID_KEYBOARD_SC_KEYPAD_1_AND_END, HID_KEYBOARD_MODIFIER_RIGHTALT | HID_KEYBOARD_MODIFIER_RIGHTCTRL | HID_KEYBOARD_MODIFIER_RIGHTSHIFT);
+		fn_down(code, action);
+		break;
 	case SCANCODE_FN2:
-	case SCANCODE_FN3:
+		queue_autokeys(HID_KEYBOARD_SC_KEYPAD_2_AND_DOWN_ARROW, HID_KEYBOARD_MODIFIER_RIGHTALT | HID_KEYBOARD_MODIFIER_RIGHTCTRL | HID_KEYBOARD_MODIFIER_RIGHTSHIFT);
+		fn_down(code, action);
+		break;
+	case SCANCODE_FN3:	
+		queue_autokeys(HID_KEYBOARD_SC_KEYPAD_3_AND_PAGE_DOWN, HID_KEYBOARD_MODIFIER_RIGHTALT | HID_KEYBOARD_MODIFIER_RIGHTCTRL | HID_KEYBOARD_MODIFIER_RIGHTSHIFT);
+		fn_down(code, action);
+		break;	
 	case SCANCODE_FN4:
+		queue_autokeys(HID_KEYBOARD_SC_KEYPAD_4_AND_LEFT_ARROW, HID_KEYBOARD_MODIFIER_RIGHTALT | HID_KEYBOARD_MODIFIER_RIGHTCTRL | HID_KEYBOARD_MODIFIER_RIGHTSHIFT);
+		fn_down(code, action);
+		break;
 	case SCANCODE_FN5:
 	case SCANCODE_FN6:
 	case SCANCODE_FN7:
@@ -1086,7 +1098,12 @@ void handle_code_deactuate(const uint8_t code, const uint8_t action, const uint8
 		mod_up(code, action, tapkey, tap);
 		break;
 	case SCANCODE_FN:
+		fn_up(code, action, tapkey, tap);
+		break;
 	case SCANCODE_FN2:
+		queue_autokeys(HID_KEYBOARD_SC_KEYPAD_2_AND_DOWN_ARROW, HID_KEYBOARD_MODIFIER_LEFTALT | HID_KEYBOARD_MODIFIER_LEFTCTRL | HID_KEYBOARD_MODIFIER_LEFTSHIFT);
+		fn_up(code, action, tapkey, tap);
+		break;
 	case SCANCODE_FN3:
 	case SCANCODE_FN4:
 	case SCANCODE_FN5:
